@@ -2,6 +2,10 @@ version: '3'
 services: 
   web:
     build: .
+    image: vijayabharathib/fcc-data-viz
     command: "npm run dev"
+    volumes:
+      - .:/opt/app
+      - /opt/app/node_modules
     ports:
       - "8080:8080"
