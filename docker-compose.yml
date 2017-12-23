@@ -2,7 +2,7 @@ version: '3'
 services: 
   web:
     build: .
-    image: vijayabharathib/fcc-data-viz
+    image: vijayabharathib/fcc-dataviz-1011
     command: "npm run dev"
     volumes:
       - .:/opt/app
