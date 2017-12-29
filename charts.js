@@ -4,10 +4,36 @@ var data_visualization=(function(){
   var notes="Notes: A Guide to the National Income and Product Accounts of the United States (NIPA) - (http://www.bea.gov/national/pdf/nipaguid.pdf)";
   var usGDP_url="https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json";
   var chart_title="US Gross Domestic Product";
+  var zipLineURL = "https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/cyclist-data.json";
+
   function presentUSGDP(){
+    d3.json(zipLineURL,privateScatterPlot);
     d3.json(usGDP_url, privateDrawBarChart);
   }
 
+  function privateScatterPlot(data){
+    var flatData=privateTransformCycleData(data);
+    var svg = dimple.newSvg("#scatterplot", 1200, 600);
+    var myChart= new dimple.chart(svg,flatData);
+    myChart.addMeasureAxis("x", "BehindBy");
+    myChart.addMeasureAxis("y", "Ranking");
+    myChart.addSeries(["Ranking" , "Allegation", "Dopped"], dimple.plot.bubble);
+    myChart.addLegend(200, 10, 360, 20, "right");
+    myChart.draw();
+  }
+  function privateTransformCycleData(data){
+    data.sort((a,b)=>{return a.Place-b.Place});
+    return data.map((cyclist)=>{
+      var minsBehind=cyclist.Seconds-data[0].Seconds;
+      var doping = (cyclist.Doping.length>0 ? "Alleged For Doping":"No Dopping Allegations");
+      return {
+        "BehindBy":minsBehind,
+        "Dopped":doping,
+        "Ranking": cyclist.Place,
+        "Allegation":cyclist.Doping
+      }
+    });
+  }
   function privateDrawBarChart(data){
     var flatData=privateExtractData(data.data);
     var svg = dimple.newSvg(".container", 1200, 600);
